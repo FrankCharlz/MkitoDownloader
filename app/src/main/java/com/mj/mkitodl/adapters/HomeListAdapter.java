@@ -40,7 +40,6 @@ public class HomeListAdapter extends RecyclerView.Adapter<HomeListAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        holder.mTextView.setText(songs.get(position).toString());
         Target t = new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
@@ -58,6 +57,9 @@ public class HomeListAdapter extends RecyclerView.Adapter<HomeListAdapter.ViewHo
                 M.log("Picasso preparing at pos "+position);
             }
         };
+
+        holder.mTextView.setText(songs.get(position).toString());
+        Picasso.with(context).load(songs.get(position).getImageUrl()).into(t);
 
     }
 
