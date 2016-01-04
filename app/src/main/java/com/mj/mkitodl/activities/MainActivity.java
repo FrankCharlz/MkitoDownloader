@@ -2,14 +2,18 @@ package com.mj.mkitodl.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mj.mkitodl.R;
+import com.mj.mkitodl.adapters.HomeListAdapter;
 import com.mj.mkitodl.models.HomeResponse;
 import com.mj.mkitodl.models.Song;
 import com.mj.mkitodl.network.MkitoService;
@@ -25,6 +29,8 @@ import retrofit.Retrofit;
 
 public class MainActivity extends AppCompatActivity {
 
+    private RecyclerView mRecyclerView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle("Home");
+
+        initView();
 
         Gson gson = new GsonBuilder().create();
         OkHttpClient client = HttpClient.INSTANCE.getClient();
@@ -54,7 +62,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void initView() {
+        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_home);
+        mRecyclerView.setHasFixedSize(true);
+        LinearLayoutManager lm = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(lm);
+    }
 
+
+    private HomeListAdapter adapter;
     private Callback<HomeResponse> hoo = new Callback<HomeResponse>() {
         @Override
         public void onResponse(Response<HomeResponse> response, Retrofit retrofit) {
@@ -62,6 +78,9 @@ public class MainActivity extends AppCompatActivity {
             for ( Song s : b.songs){
                 M.log(s.toString());
             }
+
+            adapter = new HomeListAdapter(b.songs);
+            mRecyclerView.setAdapter(adapter);
         }
 
         @Override
