@@ -1,4 +1,4 @@
-package com.mj.mkitodl.activities;
+package com.mj.mkitodl.network;
 
 import android.content.Context;
 

@@ -16,4 +16,10 @@ public class M {
     public static void toast(Context context, String message) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
+
+    public static String capitalize(String str) {
+        char f = str.charAt(0);
+        f = Character.toUpperCase(f);
+        return f+str.substring(1, str.length());
+    }
 }

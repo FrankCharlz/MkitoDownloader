@@ -4,18 +4,23 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.LinearLayout;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.mikepenz.materialdrawer.AccountHeader;
+import com.mikepenz.materialdrawer.AccountHeaderBuilder;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mj.mkitodl.R;
 import com.mj.mkitodl.adapters.HomeListAdapter;
 import com.mj.mkitodl.models.HomeResponse;
 import com.mj.mkitodl.models.Song;
+import com.mj.mkitodl.network.HttpClient;
 import com.mj.mkitodl.network.MkitoService;
 import com.mj.mkitodl.utils.Constants;
 import com.mj.mkitodl.utils.M;
@@ -38,6 +43,28 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle("Home");
+
+        AccountHeader drawerHeader = new AccountHeaderBuilder()
+                .withActivity(this)
+                .withHeaderBackground(R.drawable.mk_header)
+                .build();
+
+        //items
+        PrimaryDrawerItem item0 = new PrimaryDrawerItem().withName("Top 10");
+        PrimaryDrawerItem item1 = new PrimaryDrawerItem().withName("Playlist");
+
+        Drawer drawer = new DrawerBuilder()
+                .withActivity(this)
+                .withToolbar(toolbar)
+                .withAccountHeader(drawerHeader)
+                .build();
+
+        drawer.addItem(item0);
+        drawer.addItem(item1);
+
+        //show harmburger
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        drawer.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
 
         initView();
 
@@ -65,20 +92,22 @@ public class MainActivity extends AppCompatActivity {
     private void initView() {
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_home);
         mRecyclerView.setHasFixedSize(true);
-        LinearLayoutManager lm = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(lm);
-    }
 
+        if (!getResources().getBoolean(R.bool.is_tablet)) {
+            LinearLayoutManager lm = new LinearLayoutManager(this);
+            mRecyclerView.setLayoutManager(lm);
+        } else {
+            StaggeredGridLayoutManager slm = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
+            mRecyclerView.setLayoutManager(slm);
+        }
+
+    }
 
     private HomeListAdapter adapter;
     private Callback<HomeResponse> hoo = new Callback<HomeResponse>() {
         @Override
         public void onResponse(Response<HomeResponse> response, Retrofit retrofit) {
             HomeResponse b = response.body();
-            for ( Song s : b.songs){
-                M.log(s.toString());
-            }
-
             adapter = new HomeListAdapter(b.songs);
             mRecyclerView.setAdapter(adapter);
         }
