@@ -2,7 +2,10 @@ package com.mj.mkitodl.models;
 
 import com.mj.mkitodl.utils.M;
 
-public class SongBasic {
+import java.io.Serializable;
+
+public class SongBasic implements Serializable {
+	public static final String SERIALIZED_CLASS = "xyN";
 	public String song_url, song_name, song_preview;
 
 	@Override

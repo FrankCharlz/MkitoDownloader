@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">Mkito Downloader</string>
     <string name="action_settings">Settings</string>
+    <string name="home">Home</string>
+    <string name="song">Song</string>
 </resources>

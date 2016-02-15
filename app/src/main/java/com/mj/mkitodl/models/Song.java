@@ -2,7 +2,8 @@ package com.mj.mkitodl.models;
 
 import com.mj.mkitodl.utils.M;
 
-public class Song extends SongBasic {
+
+public class Song extends SongBasic{
 	public String category, image, artist_name, artist_url;
 
 	@Override

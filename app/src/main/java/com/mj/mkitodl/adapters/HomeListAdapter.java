@@ -13,8 +13,10 @@ import android.widget.TextView;
 
 import com.mj.mkitodl.R;
 import com.mj.mkitodl.activities.SongActivity;
+import com.mj.mkitodl.fragments.TopTenFragment;
 import com.mj.mkitodl.models.Song;
 import com.mj.mkitodl.utils.CircleTransform;
+import com.mj.mkitodl.utils.Constants;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -63,6 +65,8 @@ public class HomeListAdapter extends RecyclerView.Adapter<HomeListAdapter.ViewHo
 
     private void startSongActivity(Song song) {
         Intent intent = new Intent(context, SongActivity.class);
+        intent.putExtra(Song.SERIALIZED_CLASS, song);
+        context.startActivity(intent);
     }
 
 

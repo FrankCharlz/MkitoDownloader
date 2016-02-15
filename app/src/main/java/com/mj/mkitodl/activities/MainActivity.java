@@ -8,19 +8,22 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mj.mkitodl.R;
 import com.mj.mkitodl.adapters.HomeListAdapter;
+import com.mj.mkitodl.fragments.TopTenFragment;
 import com.mj.mkitodl.models.HomeResponse;
-import com.mj.mkitodl.models.Song;
-import com.mj.mkitodl.network.HttpClient;
+import com.mj.mkitodl.network.Network;
 import com.mj.mkitodl.network.MkitoService;
 import com.mj.mkitodl.utils.Constants;
 import com.mj.mkitodl.utils.M;
@@ -28,7 +31,6 @@ import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
 
 import retrofit.Callback;
-import retrofit.GsonConverterFactory;
 import retrofit.Response;
 import retrofit.Retrofit;
 
@@ -62,14 +64,21 @@ public class MainActivity extends AppCompatActivity {
         drawer.addItem(item0);
         drawer.addItem(item1);
 
+        drawer.setOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+            @Override
+            public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                loadFragment(position);
+                return false;
+            }
+        });
+
         //show harmburger
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         drawer.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
 
         initView();
 
-        Gson gson = new GsonBuilder().create();
-        OkHttpClient client = HttpClient.INSTANCE.getClient();
+        OkHttpClient client = Network.INSTANCE.getClient();
         client.setCache(
                 new Cache(
                         getApplicationContext().getCacheDir(),
@@ -77,16 +86,15 @@ public class MainActivity extends AppCompatActivity {
                 )
         );
 
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.BASE_URL)
-                .client(client)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-
-        MkitoService service = retrofit.create(MkitoService.class);
+        MkitoService service = Network.INSTANCE.getRetrofit().create(MkitoService.class);
         service.getHome().enqueue(hoo);
 
+    }
+
+    private void loadFragment(int position) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.container_main, new TopTenFragment());
     }
 
     private void initView() {
