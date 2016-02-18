@@ -85,12 +85,12 @@ public class MainActivity extends AppCompatActivity {
         /**
          *
          iM REMOVING CACHE FOR NOW....
-        client.setCache(
-                new Cache(
-                        getApplicationContext().getCacheDir(),
-                        Constants.CACHE_MAX_SIZE
-                )
-        );
+         client.setCache(
+         new Cache(
+         getApplicationContext().getCacheDir(),
+         Constants.CACHE_MAX_SIZE
+         )
+         );
          */
 
         service = Network.INSTANCE.getRetrofit().create(MkitoService.class);
@@ -123,29 +123,33 @@ public class MainActivity extends AppCompatActivity {
     private Callback<HomeResponse> hoo = new Callback<HomeResponse>() {
         @Override
         public void onResponse(Response<HomeResponse> response, Retrofit retrofit) {
+            if (!response.isSuccess()) {
+                retry();
+                return;
+            }
+
             HomeResponse b = response.body();
             if (b.success == 1) {
                 adapter = new HomeListAdapter(b.songs);
-                M.log("songs idadi : "+ b.songs.size());
                 mRecyclerView.setAdapter(adapter);
+                M.log("songs idadi : " + b.songs.size());
             } else {
-                Snackbar
-                        .make(findViewById(R.id.container_main), "Request failed, try again.", Snackbar.LENGTH_INDEFINITE)
-                        .setAction("RETRY",
-                                new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        service.getHome(null).enqueue(hoo); // retry request
-                                    }
-                                })
-                        .show();
-
+                M.log(b.toString());
+                retry();
             }
 
         }
 
         @Override
         public void onFailure(Throwable t) {
+            M.log("Request failed...");
+            M.log(t.getMessage());
+            M.log(t.getLocalizedMessage());
+            M.log(t.getCause().toString());
+            retry();
+        }
+
+        private void retry() {
             Snackbar
                     .make(findViewById(R.id.container_main), "Request failed, try again.", Snackbar.LENGTH_INDEFINITE)
                     .setAction("RETRY",
@@ -156,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             })
                     .show();
-            M.log(t.getLocalizedMessage());
+
         }
     };
 

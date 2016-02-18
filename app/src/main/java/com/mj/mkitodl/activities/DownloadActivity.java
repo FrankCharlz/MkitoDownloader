@@ -14,6 +14,8 @@ import android.widget.Toast;
 import com.mj.mkitodl.R;
 import com.mj.mkitodl.utils.M;
 
+import java.io.File;
+
 /**
  * Created by Frank on 2/18/2016.
  *
@@ -22,7 +24,7 @@ import com.mj.mkitodl.utils.M;
 
 public class DownloadActivity extends AppCompatActivity {
     public static final String SONG_URL_CARRIER = "s763";
-    private static final String SONG_NAME_CARRIER = "638hds";
+    public static final String SONG_NAME_CARRIER = "793bf";
     private String song_url;
     private WebView webView;
     private String song_name;
@@ -41,7 +43,7 @@ public class DownloadActivity extends AppCompatActivity {
         webView.setVisibility(View.VISIBLE);
         webView.loadUrl(song_url);
 
-        webView.setDownloadListener(new MyWebViewClient());
+        //webView.setDownloadListener(new MyWebViewClient());
 
 
     }
@@ -56,11 +58,13 @@ public class DownloadActivity extends AppCompatActivity {
                     Toast.LENGTH_LONG)
                     .show();
 
+            File folder = new File(Environment.getExternalStorageDirectory().getPath()+"/Mkito Downloads/");
+            if (!folder.exists()) folder.mkdirs();
+
             DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
             request.allowScanningByMediaScanner();
             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, song_name);
-// You can change the name of the downloads, by changing "download" to everything you want, such as the mWebview title...
+            request.setDestinationInExternalPublicDir(folder.getAbsolutePath(), song_name);
             DownloadManager dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
             dm.enqueue(request);
         }

@@ -75,6 +75,7 @@ public class SongActivity extends AppCompatActivity  {
             public void onClick(View view) {
                 Intent i =new Intent( context, DownloadActivity.class);
                 i.putExtra(DownloadActivity.SONG_URL_CARRIER, song.getSongUrl());
+                i.putExtra(DownloadActivity.SONG_NAME_CARRIER, song.getSongName());
                 context.startActivity(i);
             }
         });
