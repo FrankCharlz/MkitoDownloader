@@ -1,6 +1,7 @@
 package com.mj.mkitodl.activities;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -37,6 +38,7 @@ import retrofit.Retrofit;
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView mRecyclerView;
+    private MkitoService service;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
                 )
         );
 
-        MkitoService service = Network.INSTANCE.getRetrofit().create(MkitoService.class);
+        service = Network.INSTANCE.getRetrofit().create(MkitoService.class);
         service.getHome().enqueue(hoo);
 
     }
@@ -116,12 +118,38 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onResponse(Response<HomeResponse> response, Retrofit retrofit) {
             HomeResponse b = response.body();
-            adapter = new HomeListAdapter(b.songs);
-            mRecyclerView.setAdapter(adapter);
+            if (b.success == 1) {
+                adapter = new HomeListAdapter(b.songs);
+                M.log("songs idadi : "+ b.songs.size());
+                mRecyclerView.setAdapter(adapter);
+            } else {
+                Snackbar
+                        .make(findViewById(R.id.container_main), "Request failed, try again.", Snackbar.LENGTH_INDEFINITE)
+                        .setAction("RETRY",
+                                new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        service.getHome().enqueue(hoo); // retry request
+                                    }
+                                })
+                        .show();
+
+            }
+
         }
 
         @Override
         public void onFailure(Throwable t) {
+            Snackbar
+                    .make(findViewById(R.id.container_main), "Request failed, try again.", Snackbar.LENGTH_INDEFINITE)
+                    .setAction("RETRY",
+                            new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    service.getHome().enqueue(hoo); // retry request
+                                }
+                            })
+                    .show();
             M.log(t.getLocalizedMessage());
         }
     };
