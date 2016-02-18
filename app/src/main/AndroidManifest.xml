@@ -33,7 +33,7 @@
             android:label="@string/song"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        
+
     </application>
 
 </manifest>

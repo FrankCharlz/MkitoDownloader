@@ -82,12 +82,16 @@ public class MainActivity extends AppCompatActivity {
         initView();
 
         OkHttpClient client = Network.INSTANCE.getClient();
+        /**
+         *
+         iM REMOVING CACHE FOR NOW....
         client.setCache(
                 new Cache(
                         getApplicationContext().getCacheDir(),
                         Constants.CACHE_MAX_SIZE
                 )
         );
+         */
 
         service = Network.INSTANCE.getRetrofit().create(MkitoService.class);
         service.getHome("public, max-age=600").enqueue(hoo);
