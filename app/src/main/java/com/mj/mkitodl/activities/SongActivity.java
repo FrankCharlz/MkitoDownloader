@@ -1,5 +1,7 @@
 package com.mj.mkitodl.activities;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Point;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -11,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.mj.mkitodl.R;
 import com.mj.mkitodl.models.Song;
@@ -29,21 +32,18 @@ public class SongActivity extends AppCompatActivity  {
     private MediaControl mediaControl;
 
     private Handler handler = new Handler();
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_song_details);
 
+        context = this;
+
         song = (Song) getIntent().getSerializableExtra(Song.SERIALIZED_CLASS);
         M.log(song.toString());
 
-        /*
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int height = size.y;
-        */
 
         backgroundImageView = (ImageView) findViewById(R.id.iv_bg_song_activity);
         Picasso
@@ -73,7 +73,9 @@ public class SongActivity extends AppCompatActivity  {
         btnDownload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //start web view for downloading.............
+                Intent i =new Intent( context, DownloadActivity.class);
+                i.putExtra(DownloadActivity.SONG_URL_CARRIER, song.getSongUrl());
+                context.startActivity(i);
             }
         });
 
@@ -82,6 +84,9 @@ public class SongActivity extends AppCompatActivity  {
         seekBar = (SeekBar) findViewById(R.id.seekbar);
         seekBar.setMax(100);
         seekBar.setOnTouchListener(mediaControl);
+
+        TextView tvTitle = (TextView) findViewById(R.id.tv_song_detail_in_toolbar);
+        tvTitle.setText(song.getSongName());
 
 
     }

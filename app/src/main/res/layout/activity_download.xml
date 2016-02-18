@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+    android:fitsSystemWindows="true"
+    tools:context=".activities.MainActivity">
+
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -14,21 +16,17 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/black.alpha"
+            android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
-
-        <TextView
-            android:id="@+id/tv_song_detail_in_toolbar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|start"
-            android:text="Song Title"
-            android:textColor="@color/md_white_1000"/>
 
     </android.support.design.widget.AppBarLayout>
 
+    <WebView
+        android:id="@+id/webview_download"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </WebView>
 
 
-    <include layout="@layout/content_song_activity" />
-
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>
