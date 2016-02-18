@@ -34,6 +34,7 @@ import com.squareup.okhttp.OkHttpClient;
 import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
+import retrofit.http.Header;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -89,7 +90,8 @@ public class MainActivity extends AppCompatActivity {
         );
 
         service = Network.INSTANCE.getRetrofit().create(MkitoService.class);
-        service.getHome().enqueue(hoo);
+        service.getHome("public, max-age=600").enqueue(hoo);
+
 
     }
 
@@ -129,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
                                 new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        service.getHome().enqueue(hoo); // retry request
+                                        service.getHome(null).enqueue(hoo); // retry request
                                     }
                                 })
                         .show();
@@ -146,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
                             new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-                                    service.getHome().enqueue(hoo); // retry request
+                                    service.getHome(null).enqueue(hoo); // retry request
                                 }
                             })
                     .show();
