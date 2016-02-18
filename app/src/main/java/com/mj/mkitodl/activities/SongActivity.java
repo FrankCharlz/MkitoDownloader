@@ -1,9 +1,11 @@
 package com.mj.mkitodl.activities;
 
+import android.graphics.Point;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -36,10 +38,19 @@ public class SongActivity extends AppCompatActivity  {
         song = (Song) getIntent().getSerializableExtra(Song.SERIALIZED_CLASS);
         M.log(song.toString());
 
+        /*
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int height = size.y;
+        */
+
         backgroundImageView = (ImageView) findViewById(R.id.iv_bg_song_activity);
         Picasso
                 .with(this)
                 .load(song.getImageUrl())
+                .placeholder(R.drawable.mk_header)
+                .fit().centerCrop()
                 .into(backgroundImageView);
 
         mediaControl = new MediaControl();
