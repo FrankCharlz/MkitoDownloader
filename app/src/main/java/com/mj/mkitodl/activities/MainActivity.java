@@ -26,15 +26,12 @@ import com.mj.mkitodl.fragments.TopTenFragment;
 import com.mj.mkitodl.models.HomeResponse;
 import com.mj.mkitodl.network.Network;
 import com.mj.mkitodl.network.MkitoService;
-import com.mj.mkitodl.utils.Constants;
 import com.mj.mkitodl.utils.M;
-import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
 
 import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
-import retrofit.http.Header;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -124,18 +121,17 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onResponse(Response<HomeResponse> response, Retrofit retrofit) {
             if (!response.isSuccess()) {
-                retry();
-                return;
-            }
-
-            HomeResponse b = response.body();
-            if (b.success == 1) {
-                adapter = new HomeListAdapter(b.songs);
-                mRecyclerView.setAdapter(adapter);
-                M.log("songs idadi : " + b.songs.size());
+                makeRetryView();
             } else {
-                M.log(b.toString());
-                retry();
+                HomeResponse b = response.body();
+                if (b.success == 1) {
+                    adapter = new HomeListAdapter(b.songs);
+                    mRecyclerView.setAdapter(adapter);
+                    M.log("songs idadi : " + b.songs.size());
+                } else {
+                    M.log(b.toString());
+                    makeRetryView();
+                }
             }
 
         }
@@ -146,17 +142,17 @@ public class MainActivity extends AppCompatActivity {
             M.log(t.getMessage());
             M.log(t.getLocalizedMessage());
             M.log(t.getCause().toString());
-            retry();
+            makeRetryView();
         }
 
-        private void retry() {
+        private void makeRetryView() {
             Snackbar
                     .make(findViewById(R.id.container_main), "Request failed, try again.", Snackbar.LENGTH_INDEFINITE)
                     .setAction("RETRY",
                             new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-                                    service.getHome(null).enqueue(hoo); // retry request
+                                    service.getHome(null).enqueue(hoo); // retry request w/out cache
                                 }
                             })
                     .show();
@@ -167,16 +163,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
